@@ -1,0 +1,43 @@
+header{
+	display:block;
+	background-color:#66A3D2;
+	text-align: center;
+	height:100px;
+	padding-top:10px;
+	font: 12pt san-serif;
+	color:#033E6B;
+	}
+button{
+	color:#033E6B;
+	background-color:#66A3D2;
+	float:right;
+	padding:5px;
+	margin-right:20px;
+	font: 12pt san-serif;
+}
+#questEditor{
+	display:block;
+	height:450px;
+	width:350px;
+	float:left;
+	border-right-color:#0B61A4;
+	border-right-style:dashed;
+	color:#033E6B;
+	font: 12pt san-serif;
+}
+#map{
+	display:block;
+	height:450px;
+	width:950px;
+	float:right;
+	color:#033E6B;
+}
+#questInformation
+{
+	display:block;
+	height:200px;
+	color:#033E6B;
+	font: 14pt san-serif;
+	margin-left:20px;
+
+}
