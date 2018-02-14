@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<link rel="stylesheet" href="mystyle.css">
+	<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript">
+	</script>
+	<script type="text/javascript" src="js/jsscript.js" charset="utf-8"></script>
+	</head>
+	<body>
+		<header>
+		<h1>Инструмент для отображения квестов</h1>
+
+		</header> 
+		<nav>
+			<ul>
+				
+			</ul>
+		</nav>
+		<div id ="questEditor">
+			<p>Выберите JSON-файл</p>
+			<p><input type="file" id="file-input"></>
+			<p><button id="open">Отобразить на карте</button></p>
+		</div>
+		<div id="map"><ymaps></ymaps>
+			
+		</div>
+		<div id="questInformation">
+			<p>Информация о маршруте</p>
+			<div><span id="distance"></span></div>
+            <div><span id="duration"></span></div>
+			<div><span id="pointsOfQuest"></span></div>
+		</div>
+		<footer>
+		</footer>
+	</body>
+</html>
