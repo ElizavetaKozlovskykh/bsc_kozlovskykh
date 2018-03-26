@@ -17,9 +17,16 @@
 			</ul>
 		</nav>
 		<div id ="questEditor">
-			<p>Выберите JSON-файл</p>
-			<p><input type="file" id="file-input"></>
-			<p><button id="open">Отобразить на карте</button></p>
+			<div id = "import">
+				<p>Выберите JSON-файл</p>
+				<p><input type="file" id="file-input"></>
+				<p><button id="open">Отобразить на карте</button></p>
+			</div>
+			<div id="export">
+				<p>Здесь вы можете скачать файл маршрута</p>
+				<p><input type="text" id="file-output"></>
+				<p><button id="download">Скачать</button></p>
+			</div>
 		</div>
 		<div id="map"><ymaps></ymaps>
 			
