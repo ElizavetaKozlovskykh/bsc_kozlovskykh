@@ -2,17 +2,21 @@ var mMap;
 var mQuest;
 var mFile;
 var mJson;
-
+var allPath;
+var AllPathJSON;
+var hd;
+var multiRoute;
 window.onload = function() {
     ymaps.ready(init);
 
     document.getElementById('file-input').addEventListener('change', readFile, false);
     document.getElementById('open').addEventListener('click', displayContents, false);
+	document.getElementById('download').addEventListener('click', getAllMyPath, false);
 };
 
 function init() {
-    var mPlacemark,
-        mMap = new ymaps.Map("map", {
+    var mPlacemark;
+    mMap = new ymaps.Map("map", {
             center: [59.934616, 30.330974],
             zoom: 10
         }, {
@@ -38,7 +42,53 @@ function init() {
         getAddress(coords);
     });
 }
+//------------------------------------------------------------------------
+//Получение всех точек маршрута
+function getAllMyPath()
+{
+	var way;
+	AllPath = multiRoute.model.getViaPoints();
+	AllPathJSON = multiRoute.model.getJson();
+	console.log(AllPath);
+}
 
+//Создание файла маршрута
+function generateFile()
+{
+	console.log('Вызов функции generateFile');
+	webkitRequestFileSystem(TEMPORARY, 5*1024*1024, createhd, showerror);
+	var name = document.getElementById('file-output').value;
+	if (name != ''){
+			hd.getFile(name, {create: true, exclusive:false}, function(entry){entry.createWriter(writecontent,showerror);},showerror);
+		}
+}
+
+function writecontent(fileWriter){
+	var text = "JSON";
+	fileWriter.addEventListener('writeend', function(){hd.getDirectory(name,null,readdir,showerror)});
+	var blob = new Blob([text]);
+	fileWriter.writer(blob);
+	}
+
+function readdir(dir){
+	var reader = dir.createReader();
+	reader.readEntries(downloadFile,showerror);
+}
+function downloadFile(files){
+	url = files[0].toURL();
+	window.open(url);	
+	}
+
+
+function createhd(fs){
+	console.log('Создание файловой системы');
+	hd=fs.root;
+	}
+function showerror(e)
+	{
+		alert('Error: ' + e.code);
+	}
+//-------------------------------------------------------------------------------
 // Создание метки.
 function createPlacemark(coords) {
     return new ymaps.Placemark(coords, {
