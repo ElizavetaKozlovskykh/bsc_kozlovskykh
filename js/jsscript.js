@@ -46,10 +46,11 @@ function init() {
 //Получение всех точек маршрута
 function getAllMyPath()
 {
-	var way;
-	AllPath = multiRoute.model.getViaPoints();
-	AllPathJSON = multiRoute.model.getJson();
-	console.log(AllPath);
+	//AllPath = multiRoute.model.getViaPoints();
+	//AllPathJSON = multiRoute.model.getJson();
+	console.log(multiRoute.model.getViaPoints());
+	console.log(multiRoute.model.getAllPoints());
+	console.log(multiRoute.model.getJson());
 }
 
 //Создание файла маршрута
