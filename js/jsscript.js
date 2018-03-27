@@ -11,7 +11,7 @@ window.onload = function() {
 
     document.getElementById('file-input').addEventListener('change', readFile, false);
     document.getElementById('open').addEventListener('click', displayContents, false);
-	document.getElementById('download').addEventListener('click', getAllMyPath, false);
+	document.getElementById('download').addEventListener('click', generateFile, false);
 };
 
 function init() {
