@@ -1,17 +1,21 @@
 var mMap;
 var mQuest;
 var mFile;
+var osmFile;
 var mJson;
 var allPath;
 var AllPathJSON;
 var hd;
 var multiRoute;
+var mOSM;
+var mOSMPoint;
 window.onload = function() {
     ymaps.ready(init);
-
     document.getElementById('file-input').addEventListener('change', readFile, false);
+	document.getElementById('file-osm').addEventListener('change', readFileOSM, false);
     document.getElementById('open').addEventListener('click', displayContents, false);
-	document.getElementById('download').addEventListener('click', generateFile, false);
+	document.getElementById('download').addEventListener('click', getAllMyPath, false);
+	document.getElementById('openosm').addEventListener('click', displayOSM, false);
 };
 
 function init() {
@@ -43,13 +47,83 @@ function init() {
     });
 }
 //------------------------------------------------------------------------
+//Работа с osm файлом
+function readFileOSM(e)
+{
+	 osmFile = e.target.files[0];
+    if (!osmFile) {
+        return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        mOSM = e.target.result;
+    };
+    reader.readAsText(osmFile);
+}
+function displayOSM()
+{
+	parser = new DOMParser();
+	var point_osm = parser.parseFromString(mOSM, "text/xml");
+	var nodes = point_osm.getElementsByTagName("node");
+	console.log(nodes[0].lat);
+	clearMap();
+    var сoordinates = new Array();
+	var placemarks = new Array();
+	for (var i = 0; i < nodes.length; i++) {
+        newCoordinate = [nodes[i].getAttribute("lat"), nodes[i].getAttribute("lon")];
+		var placemark = new ymaps.Placemark(newCoordinate);
+        сoordinates.push(newCoordinate);
+		console.log('Добавил', newCoordinate, 'в массив');
+	} 
+    multiRoute = new ymaps.multiRouter.MultiRoute({
+        referencePoints: сoordinates,
+        params: {
+            //Тип маршрутизации - пешеходная маршрутизация.
+            routingMode: 'pedestrian',
+        }
+    }, {
+        // Внешний вид путевых точек.
+        wayPointStartIconColor: "#333",
+        wayPointStartIconFillColor: "#B3B3B3",
+        // Позволяет скрыть иконки путевых точек маршрута.
+        //wayPointVisible:false,
+
+        // Внешний вид транзитных точек.
+        viaPointIconRadius: 7,
+        viaPointIconFillColor: "#000088",
+        viaPointActiveIconFillColor: "#E63E92",
+
+        // Позволяет скрыть иконки транзитных точек маршрута.
+        //viaPointVisible:false,
+
+        // Внешний вид точечных маркеров под путевыми точками.
+        pinIconFillColor: "#000088",
+        pinActiveIconFillColor: "#B3B3B3",
+        // Позволяет скрыть точечные маркеры путевых точек.
+        //pinVisible:false,
+
+        // Внешний вид линии маршрута.
+        routeStrokeWidth: 2,
+        routeStrokeColor: "#000088",
+        routeActiveStrokeWidth: 6,
+        routeActiveStrokeColor: "#E63E92",
+
+        // Автоматически устанавливать границы карты так, чтобы маршрут был виден целиком.
+        boundsAutoApply: true
+    });
+
+    // Добавляем мультимаршрут на карту.
+    mMap.geoObjects.add(multiRoute);
+
+}
+//------------------------------------------------------------------------
 //Получение всех точек маршрута
 function getAllMyPath()
 {
-	//AllPath = multiRoute.model.getViaPoints();
-	//AllPathJSON = multiRoute.model.getJson();
-	console.log(multiRoute.model.getViaPoints());
-	console.log(multiRoute.model.getAllPoints());
+	var way;
+	AllPath = multiRoute.model.getViaPoints();
+	AllPathJSON = multiRoute.model.getJson();
+	console.log(multiRoute.getRoutes().toArray()[0].getPaths());
 	console.log(multiRoute.model.getJson());
 }
 
@@ -79,7 +153,6 @@ function downloadFile(files){
 	url = files[0].toURL();
 	window.open(url);	
 	}
-
 
 function createhd(fs){
 	console.log('Создание файловой системы');
@@ -276,5 +349,58 @@ class Mark {
 
     getName() {
         return this.name;
+    }
+}
+
+class QuestOSM {
+    constructor(name) {
+        this.name = name;
+        this.marks = new Array();
+    }
+
+    addMark(mark) {
+        this.marks.push(mark);
+    }
+
+    toString() {
+        var text = "";
+        text += "Пункты : "
+        for (var i = 0; i < this.marks.length; i++) {
+            text += "\n";
+            text += this.marks[i].toString();
+        }
+        text += "\n"
+        return text;
+    }
+
+    getMarks() {
+        return this.marks;
+    }
+}
+
+class MarkOSM {
+    constructor(number, name, long, lat) {
+        this.number = number;
+        this.long = long;
+        this.lat = lat;
+    }
+
+    toString() {
+        var text = "Номер(id) : " + this.number;
+        text += ", Long : " + this.long;
+        text += ", Lat : " + this.lat;
+        return text;
+    }
+
+    getLong() {
+        return this.long;
+    }
+
+    getLat() {
+        return this.lat;
+    }
+
+    getNumber() {
+        return this.number;
     }
 }
