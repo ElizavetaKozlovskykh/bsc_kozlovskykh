@@ -9,8 +9,10 @@ var hd;
 var multiRoute;
 var mOSM;
 var mOSMPoint;
+var mymap;
 window.onload = function() {
-    ymaps.ready(init);
+    init();
+	//ymaps.ready(init);
     document.getElementById('file-input').addEventListener('change', readFile, false);
 	document.getElementById('file-osm').addEventListener('change', readFileOSM, false);
     document.getElementById('open').addEventListener('click', displayContents, false);
@@ -19,7 +21,14 @@ window.onload = function() {
 };
 
 function init() {
-    var mPlacemark;
+	mymap = L.map('mapid').setView([59.934616, 30.330974], 10);
+	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox.streets',
+    accessToken: 'your.mapbox.access.token'
+}).addTo(mymap);
+	/*var mPlacemark;
     mMap = new ymaps.Map("map", {
             center: [59.934616, 30.330974],
             zoom: 10
@@ -44,7 +53,7 @@ function init() {
             });
         }
         getAddress(coords);
-    });
+    });*/
 }
 //------------------------------------------------------------------------
 //Работа с osm файлом
@@ -71,7 +80,7 @@ function displayOSM()
 	var placemarks = new Array();
 	for (var i = 0; i < nodes.length; i++) {
         newCoordinate = [nodes[i].getAttribute("lat"), nodes[i].getAttribute("lon")];
-		var placemark = new ymaps.Placemark(newCoordinate);
+		var placemark = new ymaps.Placemark(newCoordinate );
         сoordinates.push(newCoordinate);
 		console.log('Добавил', newCoordinate, 'в массив');
 	} 
