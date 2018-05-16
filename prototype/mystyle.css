@@ -25,13 +25,13 @@ button{
 	color:#033E6B;
 	font: 12pt san-serif;
 }
-#map{
+/*#map{
 	display:block;
 	height:450px;
 	width:950px;
 	float:right;
 	color:#033E6B;
-}
+}*/
 #questInformation
 {
 	display:block;
@@ -41,4 +41,4 @@ button{
 	margin-left:20px;
 
 }
-#mapid { height: 180px; }
+#mapid { height: 450px; }
