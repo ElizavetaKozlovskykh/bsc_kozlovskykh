@@ -21,12 +21,12 @@ window.onload = function() {
 };
 
 function init() {
-	mymap = L.map('mapid').setView([59.934616, 30.330974], 10);
+	mymap = L.map('mapid').setView([55.7522200, 37.6155600], 10);
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     id: 'mapbox.streets',
-    accessToken: 'your.mapbox.access.token'
+    accessToken: 'pk.eyJ1IjoibGl6YTk1IiwiYSI6ImNqaGV3YWVpczA2Y3YzMHBhM2FzZ2hvNGQifQ.bEZYv7fl29Mgpcm0uPPfjA'
 }).addTo(mymap);
 	/*var mPlacemark;
     mMap = new ymaps.Map("map", {
@@ -71,20 +71,24 @@ function readFileOSM(e)
 }
 function displayOSM()
 {
+	var marker;
 	parser = new DOMParser();
 	var point_osm = parser.parseFromString(mOSM, "text/xml");
 	var nodes = point_osm.getElementsByTagName("node");
 	console.log(nodes[0].lat);
-	clearMap();
+	//clearMap();
     var сoordinates = new Array();
 	var placemarks = new Array();
 	for (var i = 0; i < nodes.length; i++) {
         newCoordinate = [nodes[i].getAttribute("lat"), nodes[i].getAttribute("lon")];
-		var placemark = new ymaps.Placemark(newCoordinate );
-        сoordinates.push(newCoordinate);
+		сoordinates.push(newCoordinate);
 		console.log('Добавил', newCoordinate, 'в массив');
+		var marker=L.marker(newCoordinate).addTo(mymap);
+		placemarks.push(marker);
+		//var placemark = new ymaps.Placemark(newCoordinate );
+        
 	} 
-    multiRoute = new ymaps.multiRouter.MultiRoute({
+    /*multiRoute = new ymaps.multiRouter.MultiRoute({
         referencePoints: сoordinates,
         params: {
             //Тип маршрутизации - пешеходная маршрутизация.
@@ -123,7 +127,7 @@ function displayOSM()
 
     // Добавляем мультимаршрут на карту.
     mMap.geoObjects.add(multiRoute);
-
+*/
 }
 //------------------------------------------------------------------------
 //Получение всех точек маршрута
