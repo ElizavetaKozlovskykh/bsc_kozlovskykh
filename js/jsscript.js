@@ -9,8 +9,11 @@ var hd;
 var multiRoute;
 var mOSM;
 var mOSMPoint;
+var mymap;
 window.onload = function() {
-    ymaps.ready(init);
+    //init();
+	ymaps.ready(init);
+	console.log('загрузка карты');
     document.getElementById('file-input').addEventListener('change', readFile, false);
 	document.getElementById('file-osm').addEventListener('change', readFileOSM, false);
     document.getElementById('open').addEventListener('click', displayContents, false);
@@ -19,7 +22,16 @@ window.onload = function() {
 };
 
 function init() {
-    var mPlacemark;
+	/*lealet
+	mymap = L.map('mapid').setView([55.7522200, 37.6155600], 10);
+	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox.streets',
+    accessToken: 'pk.eyJ1IjoibGl6YTk1IiwiYSI6ImNqaGV3YWVpczA2Y3YzMHBhM2FzZ2hvNGQifQ.bEZYv7fl29Mgpcm0uPPfjA'
+}).addTo(mymap);
+*/
+	var mPlacemark;
     mMap = new ymaps.Map("map", {
             center: [59.934616, 30.330974],
             zoom: 10
@@ -50,7 +62,8 @@ function init() {
 //Работа с osm файлом
 function readFileOSM(e)
 {
-	 osmFile = e.target.files[0];
+	console.log('считывание файла');
+	osmFile = e.target.files[0];
     if (!osmFile) {
         return;
     }
@@ -59,22 +72,50 @@ function readFileOSM(e)
         mOSM = e.target.result;
     };
     reader.readAsText(osmFile);
+	console.log('файл считан');
 }
 function displayOSM()
 {
+	clearMap();
+	console.log('отображение точек');
+	//var marker;
 	parser = new DOMParser();
 	var point_osm = parser.parseFromString(mOSM, "text/xml");
 	var nodes = point_osm.getElementsByTagName("node");
-	console.log(nodes[0].lat);
-	clearMap();
+	//Подсчет перекрестков
+	var wayspoint = point_osm.getElementsByTagName("nd");
+	console.log(wayspoint);
+	var crossroad = new Array();
+	var j=0;//счетчик узлов
+	while (j < nodes.length)
+	{
+		var i=0;//счетчик вхождений
+		var k=0;//счетчик путевых точек
+		while((i<3)&&(k<wayspoint.length))
+		{
+			if (nodes[j].getAttribute("id") == wayspoint[k].getAttribute("ref")) 
+			{
+				i++; 
+			}
+			k++;
+		}
+		if (i>=3) {crossroad.push(nodes[j]);}
+		j++;
+	}
+	console.log(crossroad.length);
+	console.log(crossroad);
     var сoordinates = new Array();
-	var placemarks = new Array();
-	for (var i = 0; i < nodes.length; i++) {
-        newCoordinate = [nodes[i].getAttribute("lat"), nodes[i].getAttribute("lon")];
+	//var placemarks = new Array();
+	for (var i = 0; i < crossroad.length; i++) {
+        newCoordinate = [crossroad[i].getAttribute("lat"), crossroad[i].getAttribute("lon")];
+		сoordinates.push(newCoordinate);
+		//console.log('Добавил', newCoordinate, 'в массив');
+		//var marker=L.marker(newCoordinate).addTo(mymap);
+		//placemarks.push(marker);
 		var placemark = new ymaps.Placemark(newCoordinate);
-        сoordinates.push(newCoordinate);
-		console.log('Добавил', newCoordinate, 'в массив');
+        
 	} 
+	console.log('цикл закончен');
     multiRoute = new ymaps.multiRouter.MultiRoute({
         referencePoints: сoordinates,
         params: {
@@ -277,7 +318,7 @@ function startQuestOnMap() {
         // Автоматически устанавливать границы карты так, чтобы маршрут был виден целиком.
         boundsAutoApply: true
     });
-
+	
     // Событие для выбора длинны маршрута и других данных
     multiRoute.model.events.add("requestsuccess", function(event) {
         var x = document.getElementById("distance");
@@ -289,6 +330,9 @@ function startQuestOnMap() {
 
     // Добавляем мультимаршрут на карту.
     mMap.geoObjects.add(multiRoute);
+	//Получение точек маршрута
+	console.log(multiRoute.getRoutes().toArray());
+	console.log(multiRoute.getRoutes().get(0));
 }
 
 class Quest {
